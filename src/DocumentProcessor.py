@@ -1,9 +1,5 @@
 '''
-The project here is to write a RAG system from 
-scratch without the use of Llamaindex or LangChain.
-I will do it by hand without using AI.
-
-Cosa devi fare:
+"""Class to handle the processing and the split of the document into chunks"""
 
 1. Scrivi una classe Python che legge un file PDF o TXT e lo divide in blocchi (chunking) usando logica pura (es. contando i token o i caratteri).
 
