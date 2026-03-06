@@ -1,6 +1,6 @@
-# REMEBER
+# REMEMBER
 Activate .venv everytime with the following code inside the project folder:
-.\.venv\Scripts\Activate.ps1
+".(backslash).venv\Scripts\Activate.ps1"
 
 
 ## **Project**

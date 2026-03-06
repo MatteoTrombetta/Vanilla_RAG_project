@@ -15,7 +15,6 @@ WHAT TO INSERT AS A TYPICAL STRUCTURE FILE:
 from src.DocumentProcessor import DocumentProcessor
 from src.OllamaEmbedder import OllamaEmbedder
 from src.VanillaEmbedder import VanillaEmbedder
-import requests
 from pathlib import Path
 
 TYPE = "Document"
@@ -29,6 +28,7 @@ def main():
     ">\'1\': Chunk a document.\n"
     ">\'2\': Obtain the embdedding of string input using OllamaEmbdder class.\n"
     ">\'3\': Obtain the embdedding of string input using VanillaEmbedder class.\n"
+    ">\'4\': Simulate the ingestion of the documents int the \'\docs\' directory.\n"
     )
     x :str = input()
 
@@ -59,15 +59,31 @@ def main():
             print('\n> Choose the input string you want to embedd :')
             embedder = VanillaEmbedder()
             input_string: str = input()
-            # Check if this is needed here
             new_embedding = embedder.get_embed(input_string)
-
+        case "4":
+            #Checking ingestion of documents
+            processor = DocumentProcessor(100, 20)
+            embedder = VanillaEmbedder()
+            knowledge_base = []
+            docs_path = Path('src/docs')
+            for child in docs_path.iterdir(): 
+                doc: str = processor.load_document(child)
+                doc_chunks = processor.chunks_text(doc)
+                for chunk in doc_chunks:
+                    emb_chunk = embedder.get_embed(chunk)
+                    new_info = {
+                        "source": child.name,
+                        "text": chunk,
+                        "embedding": emb_chunk
+                    }
+                    knowledge_base.append(new_info)
+            print('Database successfully created.')
+            print(f'Total number of elaborated chunks: {len(knowledge_base)}')
+            print(f'Shape of the first chunk: {len(knowledge_base[0]["embedding"])}')
         case _: 
             print('Closing...')
     return
     
-
-
 
 
 if __name__ == "__main__":
