@@ -1,3 +1,8 @@
+# REMEBER
+Activate .venv everytime with the following code inside the project folder:
+.\.venv\Scripts\Activate.ps1
+
+
 ## **Project**
 
 Costruire un sistema RAG (Retrieval-Augmented Generation) vanilla, partendo da zero, senza usare framework di alto livello come LangChain o LlamaIndex.
@@ -13,7 +18,7 @@ Cosa Servirà:
 
 - Gestione e creazione degli emdedding, con tanto di definizione di una similarity metric
 
-- Motore di ricerca del RAG: memorizzare e cercare all'interno dei documenti. Costruire un motodo per fornire i top 3 risultati ecc.
+- Motore di ricerca del RAG: memorizzare e cercare all'interno dei documenti. Costruire un metodo per fornire i top 3 risultati ecc.
 
 - Generazione e interfaccia.
 
@@ -52,6 +57,12 @@ I tuoi Task:
 Crea un file embedder.py.
 
 Scrivi una classe Embedder. Questa classe dovrà fare una chiamata HTTP a un'API per generare gli embedding (puoi usare l'API di OpenAI o, se vuoi fare tutto gratis sul tuo PC, installare Ollama e usare un modello locale).
+
+Use case
+Input	                    Response                Use
+"input": "text"	            [vector]	            take [0]
+"input": ["t1","t2"]	    [v1, v2]	            keep both
+NB: Tip for vector databases (FAISS, Chroma, Qdrant, etc.): Always store the inner vector, not the outer array.
 
 Passa la tua lista di chunk alla classe e ottieni in cambio una lista di vettori (liste di float).
 

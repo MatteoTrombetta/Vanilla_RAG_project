@@ -1,5 +1,5 @@
 from pathlib import Path
-import Main
+import Vanilla_RAG_project.Main as Main
 
 
 class Interface():
