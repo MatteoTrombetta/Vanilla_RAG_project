@@ -1,6 +1,3 @@
-from pathlib import Path
-import Vanilla_RAG_project.Main as Main
-
 
 class Interface():
     print("This this is a program that simulates a simple RAG system." \

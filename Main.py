@@ -15,6 +15,7 @@ WHAT TO INSERT AS A TYPICAL STRUCTURE FILE:
 from src.DocumentProcessor import DocumentProcessor
 from src.OllamaEmbedder import OllamaEmbedder
 from src.VanillaEmbedder import VanillaEmbedder
+from src.Retriever import Retriever
 from pathlib import Path
 
 TYPE = "Document"
@@ -66,6 +67,7 @@ def main():
             embedder = VanillaEmbedder()
             knowledge_base = []
             docs_path = Path('src/docs')
+            print('> Embedding...')
             for child in docs_path.iterdir(): 
                 doc: str = processor.load_document(child)
                 doc_chunks = processor.chunks_text(doc)
@@ -80,6 +82,17 @@ def main():
             print('Database successfully created.')
             print(f'Total number of elaborated chunks: {len(knowledge_base)}')
             print(f'Shape of the first chunk: {len(knowledge_base[0]["embedding"])}')
+        
+            #Checking retrieval
+            search_engine = Retriever(knowledge_base)
+            query_text = 'Do octopuses live long lives?'
+            query_emb = embedder.get_embed(query_text)
+            top_chunks = search_engine.search(query_emb, k=2)
+            print('The top chunks related to this query are: ')
+            for text in top_chunks: 
+                print('> ', text)
+                #print('\n')
+        
         case _: 
             print('Closing...')
     return
@@ -87,4 +100,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main() 
