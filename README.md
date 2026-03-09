@@ -4,12 +4,12 @@ A purely educational project built to understand the inner workings of Generativ
 
 This project intentionally avoids high-level "black-box" frameworks like LangChain or LlamaIndex. Instead, it relies on standard Python libraries, linear algebra, and pure REST API calls to local AI models to build a complete RAG pipeline from the ground up.
 
-## ⚠️ Disclaimer**: 
+## ⚠️ **Disclaimer**: 
 
 Because this project adheres to a 100% local architecture, it relies on your machine's hardware to run both the embedding model and the Large Language Model (LLM) via Ollama. This could take minutes run.
 
 
-## ⚙️ Architecture & Core Modules
+### ⚙️ Architecture & Core Modules
 
 The system is strictly divided into functional modules following the Single Responsibility Principle:
 
@@ -19,59 +19,53 @@ The system is strictly divided into functional modules following the Single Resp
 4. **`generator.py`**: Manages prompt engineering, injecting retrieved context into strict prompt templates, and handling the generation via LLM.
 5. **`Main.py`**: The entry point that orchestrates the entire pipeline (Ingestion -> Embedding -> Retrieval -> Generation).
 
-## 🛠️ Prerequisites
+### 🛠️ Prerequisites
 
 * **Python 3.10+**
 * **Ollama**: Must be installed and running locally to serve the models privately and for free.
 
-### Required Local Models
+#### Required Local Models
 Before running the project, pull the necessary models via Ollama:
 
-# Model for generating 768-dimensional vector embeddings
+**Model for generating 768-dimensional vector embeddings**
+
 ```ollama pull nomic-embed-text```
 
-# Model for final text generation
+**Model for final text generation**
+
 ```ollama pull llama3```
 
 
-# 🚀 Setup and Installation
+## 🚀 Setup and Installation
 1. Clone the repository:
 
 ```git clone [https://github.com/MatteoTrombetta/vanilla-rag-project.git](https://github.com/MatteoTrombetta/vanilla-rag-project.git) ```
+
 ```cd vanilla-rag-project```
 
 2. Create and activate a virtual environment:
+
 ```python -m venv .venv```
 
-# On Windows:
+**On Windows**:
+
 ```.\.venv\Scripts\activate```
 
-# On macOS/Linux:
+**On macOS/Linux**:
+
 ```source .venv/bin/activate```
 
 3. Install Depedencies:
+
 ```pip install -r requirements.txt```
 
 4. Add your documents:
+
 Place your raw .txt files inside the src/docs/ directory.
 
 5. Run the pipelines
+
 ```python Main.py```
-
-
-# 📂 Project Structure
-vanilla-rag-project/
-├── src/
-│   ├── docs/                   # Raw text documents for ingestion
-│   ├── document_processor.py   # Text extraction and chunking logic
-│   ├── embedder.py             # HTTP client for Ollama embedding API
-│   ├── retriever.py            # Numpy-based semantic search engine
-│   └── generator.py            # LLM prompt engineering and generation
-├── .gitignore
-├── Main.py                     # Entry point
-├── README.md
-└── requirements.txt            # Project dependencies (numpy, requests)
-
 
 
 # 🗺️ Roadmap & Future Improvements
