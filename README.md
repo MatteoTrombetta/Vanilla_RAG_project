@@ -1,121 +1,86 @@
-# REMEMBER
-Activate .venv everytime with the following code inside the project folder:
-".(backslash).venv\Scripts\Activate.ps1"
+# 🧠 Vanilla RAG (Retrieval-Augmented Generation) from Scratch
+
+A purely educational project built to understand the inner workings of Generative AI and Retrieval-Augmented Generation systems from first principles. 
+
+This project intentionally avoids high-level "black-box" frameworks like LangChain or LlamaIndex. Instead, it relies on standard Python libraries, linear algebra, and pure REST API calls to local AI models to build a complete RAG pipeline from the ground up.
+
+## ⚠️ Disclaimer**: 
+
+Because this project adheres to a 100% local architecture, it relies on your machine's hardware to run both the embedding model and the Large Language Model (LLM) via Ollama. This could take minutes run.
 
 
-## **Project**
+## ⚙️ Architecture & Core Modules
 
-Costruire un sistema RAG (Retrieval-Augmented Generation) vanilla, partendo da zero, senza usare framework di alto livello come LangChain o LlamaIndex.
+The system is strictly divided into functional modules following the Single Responsibility Principle:
 
+1. **`document_processor.py`**: Handles local file ingestion and implements a custom sliding-window algorithm for text chunking with overlap.
+2. **`embedder.py`**: A custom REST client using the `requests` library to communicate with local embedding models and transform text chunks into high-dimensional vectors.
+3. **`retriever.py`**: The mathematical core. Uses `numpy` and linear algebra to compute the **Cosine Similarity** between the user query vector and the knowledge base vectors.
+4. **`generator.py`**: Manages prompt engineering, injecting retrieved context into strict prompt templates, and handling the generation via LLM.
+5. **`Main.py`**: The entry point that orchestrates the entire pipeline (Ingestion -> Embedding -> Retrieval -> Generation).
 
-Cosa Servirà:
+## 🛠️ Prerequisites
 
-- Gestore di file in input che leggerà un txt oppure (comincia con questo) un pdf (vedremo se abilitarlo anche per file docx).
+* **Python 3.10+**
+* **Ollama**: Must be installed and running locally to serve the models privately and for free.
 
-- Scrivere un metodo per leggere il file in ingresso
+### Required Local Models
+Before running the project, pull the necessary models via Ollama:
 
-- Scrivere un metodo per cui il programma tokenizzerà il file input. Con questo avremo un metodo di chuncking, in modo da spezzare i file in blocchi definiti (acnhe con un modo per non troncare frasi)
+# Model for generating 768-dimensional vector embeddings
+```ollama pull nomic-embed-text```
 
-- Gestione e creazione degli emdedding, con tanto di definizione di una similarity metric
-
-- Motore di ricerca del RAG: memorizzare e cercare all'interno dei documenti. Costruire un metodo per fornire i top 3 risultati ecc.
-
-- Generazione e interfaccia.
-
-
-
-
-
-## Gemini Guidelines
-
-**Settimana 1**: Ingestione e Chunking (Il manipolatore di testi)
-Prima di fare AI, devi saper manipolare i dati. L'obiettivo qui è leggere un documento e dividerlo in pezzi più piccoli (chunk), un passaggio critico perché i modelli AI hanno un limite di testo che possono "leggere" in una volta sola.
-
-I tuoi Task:
-
-Crea un file document_processor.py.
-
-Scrivi una classe DocumentProcessor che accetta il percorso di un file di testo (.txt o .md).
-
-Scrivi un metodo per leggere il contenuto del file.
-
-Scrivi un metodo di chunking: deve prendere il testo intero e restituire una lista di stringhe (es. blocchi di 500 caratteri, con una sovrapposizione di 50 caratteri tra un blocco e l'altro per non spezzare le frasi a metà).
-
-Concetti Python da imparare/ripassare: * Programmazione ad oggetti: definire una class e il metodo costruttore __init__.
-
-Gestione sicura dei file (il costrutto with open(...) as file:).
-
-Type Hinting (es. def fai_chunking(self, testo: str) -> list[str]:).
+# Model for final text generation
+```ollama pull llama3```
 
 
+# 🚀 Setup and Installation
+1. Clone the repository:
 
-**Settimana 2**: Vettorizzazione (Parlare con i modelli)
-Ora devi trasformare i tuoi "chunk" di testo in numeri, o meglio, in vettori (Embeddings). Questo permette al computer di capire il significato semantico delle parole.
+```git clone [https://github.com/MatteoTrombetta/vanilla-rag-project.git](https://github.com/MatteoTrombetta/vanilla-rag-project.git) ```
+```cd vanilla-rag-project```
 
-I tuoi Task:
+2. Create and activate a virtual environment:
+```python -m venv .venv```
 
-Crea un file embedder.py.
+# On Windows:
+```.\.venv\Scripts\activate```
 
-Scrivi una classe Embedder. Questa classe dovrà fare una chiamata HTTP a un'API per generare gli embedding (puoi usare l'API di OpenAI o, se vuoi fare tutto gratis sul tuo PC, installare Ollama e usare un modello locale).
+# On macOS/Linux:
+```source .venv/bin/activate```
 
-Use case
-Input	                    Response                Use
-"input": "text"	            [vector]	            take [0]
-"input": ["t1","t2"]	    [v1, v2]	            keep both
-NB: Tip for vector databases (FAISS, Chroma, Qdrant, etc.): Always store the inner vector, not the outer array.
+3. Install Depedencies:
+```pip install -r requirements.txt```
 
-Passa la tua lista di chunk alla classe e ottieni in cambio una lista di vettori (liste di float).
+4. Add your documents:
+Place your raw .txt files inside the src/docs/ directory.
 
-Concetti Python da imparare/ripassare:
+5. Run the pipelines
+```python Main.py```
 
-Gestire pacchetti esterni (creare un file requirements.txt e un Virtual Environment).
 
-Fare richieste web con la libreria requests.
-
-Nascondere le chiavi segrete (usare la libreria python-dotenv per non mettere mai l'API key nel codice).
-
-Gestione degli errori: usare try... except nel caso in cui l'API non risponda.
+# 📂 Project Structure
+vanilla-rag-project/
+├── src/
+│   ├── docs/                   # Raw text documents for ingestion
+│   ├── document_processor.py   # Text extraction and chunking logic
+│   ├── embedder.py             # HTTP client for Ollama embedding API
+│   ├── retriever.py            # Numpy-based semantic search engine
+│   └── generator.py            # LLM prompt engineering and generation
+├── .gitignore
+├── Main.py                     # Entry point
+├── README.md
+└── requirements.txt            # Project dependencies (numpy, requests)
 
 
 
-**Settimana 3**: Il Motore di Ricerca (La matematica dietro le quinte)
-Questo è il cuore del RAG. Quando l'utente fa una domanda, devi trasformare la domanda in un vettore e trovare quali chunk del tuo documento hanno i vettori più "vicini" (simili) matematicamente.
+# 🗺️ Roadmap & Future Improvements
+While this project successfully proves the concept of a Vanilla RAG, transitioning it to an Enterprise-grade system requires a few architectural upgrades. Here are the planned future improvements:
+* [ ] **Semantic Chunking**: Replace the current "N-character" brute-force chunking with NLP libraries like nltk or spaCy to dynamically split text at the end of sentences or paragraphs, preserving better semantic meaning.
 
-I tuoi Task:
+* [ ] **Integration of a real Vector Database**: As the document base grows, iterating over an in-memory Python list becomes inefficient. Future iterations will replace the custom Retriever list with a lightweight, optimized vector database like ChromaDB or Qdrant.
 
-Crea un file vector_store.py.
+* [ ] **Advanced Document Parsers**: Expand the DocumentProcessor to handle real-world messy data formats (e.g., PDFs, HTML, tabular data) using libraries like PyPDF2 or BeautifulSoup.
 
-Scrivi una classe SimpleVectorDB che salvi in memoria i tuoi chunk e i rispettivi vettori (basta un semplice dizionario Python o una lista).
+* [ ] **Evaluation Metrics**: Implement an automated testing framework using tools like RAGAS or TruLens to mathematically evaluate the quality of the retrieved context and the accuracy of the generated answers, preventing silent regressions.
 
-Scrivi una funzione che calcoli la Cosine Similarity tra il vettore della domanda e tutti i vettori salvati.
-
-Ordina i risultati e restituisci i "Top 3" chunk più rilevanti.
-
-Concetti Python da imparare/ripassare:
-
-Usare la libreria numpy per operazioni matematiche su array (molto più veloce del Python standard).
-
-Ordinamento avanzato di liste e dizionari (funzione sorted() con argomenti key personalizzati, magari usando funzioni lambda).
-
-
-
-**Settimana 4**: Generazione e Interfaccia (La chiusura del cerchio)
-È il momento di unire i pezzi. Prenderai i frammenti di testo trovati, li unirai alla domanda dell'utente e chiederai all'LLM di formulare la risposta finale.
-
-I tuoi Task:
-
-Crea un file main.py. Questo sarà il "direttore d'orchestra" che importa e usa tutte le classi che hai creato finora.
-
-Crea un "Prompt Template": una stringa in cui inietti la domanda e il contesto trovato.
-
-Fai un'ultima chiamata all'LLM (es. GPT-3.5 o Llama 3) per fargli generare la risposta basata sul prompt.
-
-Permetti all'utente di fare la domanda direttamente dal terminale (es. python main.py "Quali sono le conclusioni del documento?").
-
-Concetti Python da imparare/ripassare:
-
-Importare moduli tra file diversi nel tuo progetto.
-
-Le f-strings per formattare testi complessi in modo pulito (es. f"Rispondi a questa domanda: {domanda} usando questo contesto: {contesto}").
-
-Usare argparse o sys.argv per passare argomenti allo script da riga di comando.

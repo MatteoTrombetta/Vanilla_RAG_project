@@ -1,35 +1,18 @@
-'''
-Main.
-
-The project here is to write a RAG system from 
-scratch without the use of Llamaindex or LangChain.
-I will do it by hand without using AI.
-
-WHAT TO INSERT AS A TYPICAL STRUCTURE FILE:
-- File header: with Shebangline, encoding declaration, Docstring
-- Imports
-- Global Constants
-
-'''
-
 from src.DocumentProcessor import DocumentProcessor
 from src.OllamaEmbedder import OllamaEmbedder
 from src.VanillaEmbedder import VanillaEmbedder
 from src.Retriever import Retriever
+from src.Generator import Generator
 from pathlib import Path
 
-TYPE = "Document"
 
-# OTHER FUNCTIONS TO BE USED
-
-# MAIN FUNCTION
 def main():
     print("> This this is a program that simulates a simple RAG system." \
-    "\nPlease enter decide whether you want to append a new document with the following commands: \n" \
+    "\nPlease enter decide what you want to do with the following commands: \n" \
     ">\'1\': Chunk a document.\n"
     ">\'2\': Obtain the embdedding of string input using OllamaEmbdder class.\n"
     ">\'3\': Obtain the embdedding of string input using VanillaEmbedder class.\n"
-    ">\'4\': Simulate the ingestion of the documents int the \'\docs\' directory.\n"
+    ">\'4\': Simulate the ingestion of documents in the \'\\docs\' directory and a generation of text using the RAG system.\n"
     )
     x :str = input()
 
@@ -37,8 +20,6 @@ def main():
     p = Path('src/docs/file_prova2.txt')
     document = processor.load_document(p)
     chunks_ex = processor.chunks_text(document)
-
-    print("\n")
 
     match x:
         case "1":
@@ -87,12 +68,17 @@ def main():
             search_engine = Retriever(knowledge_base)
             query_text = 'Do octopuses live long lives?'
             query_emb = embedder.get_embed(query_text)
-            top_chunks = search_engine.search(query_emb, k=2)
+            top_chunks = search_engine.search(query_emb, k=3)
             print('The top chunks related to this query are: ')
             for text in top_chunks: 
                 print('> ', text)
-                #print('\n')
-        
+                print('\n')
+
+            #Checking genearation
+            llama_generator = Generator()
+            print('\nThe model will answer this way according ONLY to the information retrieved...')
+            answer = llama_generator.generate_answer(query_text, top_chunks)
+            print('Answer: \n', answer)
         case _: 
             print('Closing...')
     return
